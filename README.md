@@ -62,19 +62,17 @@ add_foreign_key "entries", "accounts"
 
 ### Purchase
 
-This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes with exclusively realted to the purchase (acquisition, channel, conversion). It delegates amount and date to Entry.
+This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes that are exclusively related to the purchase (acquisition_channel, conversion_funnel, etc.). It delegates amount and date to Entry.
 
+## Refund
 
-Refund
+This model <code>belongs_to</code> a Purchase and <code>has_one :entry, as: :entriable</code>. It can contain other attributes that are exclusively related to the refund (reason, partial/total, etc.). It delegates amount and date to Entry.
 
-Belongs_to a purchase and has_one :entry, as: :entriable. Can contain other attributes with info important to the refund (reason, partial/total). It delegates amount and date, to Entry.
+## Payout
 
-Payout
+This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It <code>has_one :entry, as: :entriable</code> and can contain other attributes that are exclusively related to the payout (destination, etc.). It delegates amount and date to Entry.
 
-has_one :entry, as: :entriable.  Can contain other attributes with info important to the refund (reason, partial/total). It delegates amount and date, to Entry..
-
-
-BalanceSnapshot
+## BalanceSnapshot
 
 To avoid calculating a huge amount of historical entries, a snapshot and a date
 

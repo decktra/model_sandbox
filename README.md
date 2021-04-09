@@ -43,6 +43,22 @@ Its associations are:
 
 I propose this polymorphism to easily expand the integration of other future models that represent money transactions on the user's account. Right now there is only Purchase, Refund and Payout (see bellow). But tomorrow there could be Bonus, Escrow, Gift, etc.
 
+The Entry DB migration might look like this:
+
+```ruby
+create_table "entries", force: :cascade do |t|
+  t.integer "amount", null: false
+  t.date "date", null: false
+  t.integer "account_id", null: false
+  t.string "type"
+  t.string "entriable_type", null: false
+  t.integer "entriable_id", null: false
+  t.index ["account_id"], name: "index_entries_on_account_id"
+  t.index ["entriable_type", "entriable_id"], name: "index_entries_on_entriable"
+end
+
+add_foreign_key "entries", "accounts"
+```
 
 
 

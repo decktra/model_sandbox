@@ -24,8 +24,6 @@ This model represents an user’s account. Its main attribute is `balance` (an i
 2. A `has_many` association to Entries, which are the actual money transactions (see more below).
 3. A `has_many` association to BalanceSnapshot, which are historic records of balances at a specific date (see more below).
 
-It also has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed. This constant can be modified if the payout policy eventually changes.
-
 The migration for this model requires:
 
 - An user index: `t.index ["user_id"], name: "index_accounts_on_user_id"` to efficiently search an user account.
@@ -101,7 +99,16 @@ Also, each account balance snapshot should be taken in a individual Sidekiq job 
 
 ### PaymentSender
 
-This class is responsible for paying the user its available balance, which should be the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
+This class is responsible for paying the user its payable balance. It has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed. The payable balance is then the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
+
+The `NON_PAYABLE_PERIOD` constant can be modified if the payout policy eventually changes.
+
+A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be set at the appropiate frecuencyrun daily with to loop through all accounts and calculate the previous date ending balance.
+
+Given the number of sellers will be in the millions, to avoid this job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
+
+Also, each account balance snapshot should be taken in a individual Sidekiq job (i.e. one Sidekiq job per account/date) and jobs should be idempotent (i.e. if you run the same account/date you will create or update the same DB record).
+
 
 At this point, a `PaymentPolicy` class might be needed to approve payments. An example could be a case where total refunds amount after the `NON_PAYABLE_PERIOD` is higher than total purchases amounts after the `NON_PAYABLE_PERIOD`, therefore we will be paying the user/seller an amount he currently does not have. For instance, in an extreme case, we would pay the sellers on Friday the 10th for all their sales up to Friday the 3rd, but on the 7th most purchases were refunded.
 

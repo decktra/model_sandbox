@@ -85,7 +85,7 @@ To avoid calculating a huge amount of historical entries when a balance in a giv
 An unique index on date/account_id is required to guarantee uniqueness and to search efficiently/fast: `t.index ["account_id", "date"], name: "index_balance_snapshots_on_account_id_and_date", unique: true`
 
 
-## 1. Service Objects
+## 2. Service Objects
 
 
 ### BalanceSnapshotTaker

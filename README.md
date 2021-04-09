@@ -103,7 +103,9 @@ Also, each account balance snapshot should be taken in a individual Sidekiq job 
 
 This class is responsible for paying the user its available balance, which should be the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
 
-At this point, a `PaymentPolicy` class might be needed to approve payments. An example could be a case where total refunds amount after the `NON_PAYABLE_PERIOD` is higher than total purchases amounts after the `NON_PAYABLE_PERIOD`, therefore we will be paying the user/seller an amount he currently does not have. For instance, in an extreme case, we would pay the sellers on Friday the 10th for all their sales up to Friday the 3rd, but on the 7th most purchases were refunded. Since we have an associaton Refund `belongs_to` Purchase (see Purchase above), we could easily create a Purchase `has_many` Refunds association and only pay part of the purchase that has not been refunded (if partials refunds exists) or not pay the purchase at all (if total refund took place). In any case, for the purpose of this exercise limited, I will not detail this important consideration. 
+At this point, a `PaymentPolicy` class might be needed to approve payments. An example could be a case where total refunds amount after the `NON_PAYABLE_PERIOD` is higher than total purchases amounts after the `NON_PAYABLE_PERIOD`, therefore we will be paying the user/seller an amount he currently does not have. For instance, in an extreme case, we would pay the sellers on Friday the 10th for all their sales up to Friday the 3rd, but on the 7th most purchases were refunded.
+
+Since we have an associaton Refund `belongs_to` Purchase (see Purchase above), we could easily create a Purchase `has_many` Refunds association and only pay part of the purchase that has not been refunded (if partials refunds exists) or not pay the purchase at all (if total refund took place). In any case, for the purpose of this exercise limited, I will not detail this important consideration. 
 
 Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
 

@@ -101,10 +101,14 @@ Also, each account balance snapshot should be taken in a individual Sidekiq job 
 
 ### PaymentSender
 
-This class is responsible for paying the user its available balance. Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
+This class is responsible for paying the user its available balance, which should be the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
 
-The constant NON_PAYABLE_PERIOD
-Perhaps a PaymentPolicy class is needed to approve payments. An example could be a case where total refunds amount after the Non Payable Period is higher than total purchases amounts after the Non Payable Period, therefore we will be paying the user/seller an amount he currently does not have.
+At this point, a `PaymentPolicy` class might be needed to approve payments. An example could be a case where total refunds amount after the `NON_PAYABLE_PERIOD` is higher than total purchases amounts after the `NON_PAYABLE_PERIOD`, therefore we will be paying the user/seller an amount he currently does not have. For instance, in an extreme case, we would pay the sellers on Friday the 10th for all their sales up to Friday the 3rd, but on the 7th most purchases were refunded. Since we have an associaton Refund `belongs_to` Purchase (see
+
+Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
+
+The constant 
+
 
 Notes
 

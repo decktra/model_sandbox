@@ -24,7 +24,7 @@ This model represents an user’s account. Its main attribute is `balance` (an i
 2. A `has_many` association to Entries, which are the actual money transactions (see more below).
 3. A `has_many` association to BalanceSnapshot, which are historic records of balances at a specific date (see more below).
 
-It also has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed and can be modified if the payout policy changes.
+It also has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed. This constant can be modified if the payout policy eventually changes.
 
 The migration for this model requires:
 

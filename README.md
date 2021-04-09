@@ -34,7 +34,7 @@ The migration for this model requires:
 
 This models represents the actual money transactions. Its main attributes are amount (an integer representing USD cents) and date.
 
-I propose to implement a narrow and shallow Single Table Inheritance to distinguish to types of account entries: Debit and Credit. This would facilitate the calculation of account balance by simply adding debits and subsctracting credits to the current account's balance or a BalanceSnapshot, depending of what balance you need to calculate.
+On this models, I propose to implement a narrow and shallow Single Table Inheritance to distinguish to types of account entries: Debit and Credit. This would facilitate the calculation of account balance by simply adding debits and subsctracting credits to the current account's balance or a BalanceSnapshot, depending of what balance you need to calculate.
 
 Its associations are:
 

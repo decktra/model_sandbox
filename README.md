@@ -4,7 +4,7 @@
 
 ### - User
 
-Contains user’s attributes, a <code>has_many<code> association to Products and a <code>has_one<code> association to Account.
+Contains user’s attributes, a <code>has_many</code> association to Products and a <code>has_one</code> association to Account.
 
 ### - Product
 

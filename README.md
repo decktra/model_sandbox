@@ -66,9 +66,13 @@ add_foreign_key "entries", "accounts"
 
 This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes that are exclusively related to the purchase (acquisition_channel, conversion_funnel, etc.). It delegates amount and date to Entry.
 
+The migration for this model requires a product_id index and foreign key constraint, similar to previous examples.
+
 ### Refund
 
 This model <code>belongs_to</code> a Purchase and <code>has_one :entry, as: :entriable</code>. It can contain other attributes that are exclusively related to the refund (reason, partial/total, etc.). It delegates amount and date to Entry.
+
+The migration for this model requires a purchase_id index and foreign key constraint, similar to previous examples.
 
 ### Payout
 

@@ -83,7 +83,7 @@ This model represent a transfer of money from the user's Gumroad account to its 
 
 To avoid calculating a huge amount of historical entries when a balance in a given point of time is needed, a snapshot of a balance at the end of each date is recorded by this model. Therefore, if Account needs to calculate a balance for a specific time, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day.
 
-An unique index on date/account_id is required to guarantee uniqueness and to search efficiently/fast: `t.index ["account_id", "date"], name: "index_balance_snapshots_on_account_id_and_date", unique: true`
+An unique index on date/account_id is required to guarantee uniqueness and to search efficiently/fast: `t.index ["account_id", "date"], name: "index_balance_snapshots_on_account_id_and_date", unique: true`.
 
 
 
@@ -91,7 +91,7 @@ An unique index on date/account_id is required to guarantee uniqueness and to se
 
 ### BalanceSnapshotTaker
 
-This class is responsible for taking a balance snapshot on a given date. To achive this, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day
+This class is responsible for taking a balance snapshot on a given date. To achive this, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day.
 
 A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be run daily with to loop through all accounts and calculate the previous date ending balance.
 

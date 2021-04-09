@@ -91,7 +91,7 @@ An unique index on date/account_id is required to guarantee uniqueness and to se
 
 This class is responsible for taking a balance snapshot on a given date. To achive this, it takes as arguments `account_id` and `date`, it get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day.
 
-A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be run daily to loops through all accounts, creating in it turn indivual jobs with arguments `account_id` and yesterday's `date` to be process by Sidekiq by running this BalanceSnapshotTaker service  and thus calculating the account's previous date ending balance.
+A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be run daily to loops through all accounts, creating in its turn indivual jobs with arguments `account_id` and yesterday's `date` to be process by Sidekiq. These individual jobs will then run this `BalanceSnapshotTaker` service  and calculate each account's previous date ending balance, saving a `BalanceSnapshot` record in the DB.
 
 Given the number of sellers will be in the millions, to avoid this job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
 

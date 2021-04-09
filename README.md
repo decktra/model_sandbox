@@ -60,7 +60,7 @@ end
 add_foreign_key "entries", "accounts"
 ```
 
-## Purchase
+### Purchase
 
 This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes with exclusively realted to the purchase (acquisition, channel, conversion). It delegates amount and date to Entry.
 

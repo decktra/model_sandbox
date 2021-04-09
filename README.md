@@ -8,7 +8,7 @@ Contains user’s attributes, a <code>has_many</code> association to Products an
 
 ### - Product
 
-Contains product’s attributes, notably price, an integer representing USD cents; a <code>belongs_to</code> association to User and a <code>has_many</code> association to Purchases.
+Contains product’s attributes, notably price (an integer representing USD cents), a <code>belongs_to</code> association to User and a <code>has_many</code> association to Purchases.
 
 The migration for this model requires:
 

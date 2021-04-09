@@ -41,7 +41,7 @@ Its associations are:
 1. A <code>belongs_to</code> association to Account.
 2. A polymorphic associations to an entriable: <code>belongs_to :entriable, polymorphic: true</code>
 
-I propose this polymorphism to easily expand the integration of other future models that represent money transactions. Right now there is only Purchase, Refund and Payout (see bellow). But tomorrow there couild be Bonus, Escrows, Gift, etc.
+I propose this polymorphism to easily expand the integration of other future models that represent money transactions on the user's account. Right now there is only Purchase, Refund and Payout (see bellow). But tomorrow there could be Bonus, Escrow, Gift, etc.
 
 
 

@@ -60,5 +60,50 @@ end
 add_foreign_key "entries", "accounts"
 ```
 
+## Purchase
+
+This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes with exclusively realted to the purchase (acquisition, channel, conversion). It delegates amount and date to Entry.
+
+
+Refund
+
+Belongs_to a purchase and has_one :entry, as: :entriable. Can contain other attributes with info important to the refund (reason, partial/total). It delegates amount and date, to Entry.
+
+Payout
+
+has_one :entry, as: :entriable.  Can contain other attributes with info important to the refund (reason, partial/total). It delegates amount and date, to Entry..
+
+
+BalanceSnapshot
+
+To avoid calculating a huge amount of historical entries, a snapshot and a date
+
+Unique index on date to guarantee uniqueness and to search efficiently/fast
+
+
+
+Service Objects
+
+
+BalanceSnapshotService
+
+This class is responsible for taking a balance snapshot on a given date. This service could be run daily.
+
+
+PaymentService
+
+This class is responsible for paying the user its available balance. Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
+
+The constant NON_PAYABLE_PERIOD
+Perhaps a PaymentPolicy class is needed to approve payments. An example could be a case where total refunds amount after the Non Payable Period is higher than total purchases amounts after the Non Payable Period, therefore we will be paying the user/seller an amount he currently does not have.
+
+Notes
+
+On a real will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language… Sorry, I’ve just re-read Eric Evans book :)
+I’ll probably create a Billing namespace
+Differentiate punctual payments vs recurring payments
+Taxes and currencies
+The term Purchase was proposed, but maybe the term Sale is better? Since a seller has many sales and the buyer has many purchases? Although Purchase is a more customer centric word
+
 
 

@@ -2,11 +2,11 @@
 
 ## 1. Active Record Models
 
-### - User
+### User
 
 Contains user’s attributes, a <code>has_many</code> association to Products and a <code>has_one</code> association to Account.
 
-### - Product
+### Product
 
 Contains product’s attributes, notably price (an integer representing USD cents), a <code>belongs_to</code> association to User and a <code>has_many</code> association to Purchases.
 
@@ -15,7 +15,7 @@ The migration for this model requires:
 - A seller index: <code>t.index ["user_id"], name: "index_products_on_user_id"</code> to efficiently search an user's products.
 - A foreign key constraint: <code>add_foreign_key "products", "users"</code> to guarantee data integrity.
 
-### - Account
+### Account
 
 This model represents an user’s account. Its main attribute is balance (an integer representing USD cents) which represents the total amount of money in the user’s account. Its associations are:
 

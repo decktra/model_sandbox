@@ -60,6 +60,8 @@ end
 add_foreign_key "entries", "accounts"
 ```
 
+**Important:** Being faithful to Event Sourcing, past entries CANNOT be modified. New ones are required to be introduced to amend old ones.
+
 ### Purchase
 
 This model <code>belongs_to</code> a Product and <code>has_one :entry, as: :entriable</code>. It can contain other attributes that are exclusively related to the purchase (acquisition_channel, conversion_funnel, etc.). It delegates amount and date to Entry.
@@ -79,16 +81,17 @@ To avoid calculating a huge amount of historical entries when a balance in a giv
 An unique index on date/account_id is required to guarantee uniqueness and to search efficiently/fast: `t.index ["account_id", "date"], name: "index_balance_snapshots_on_account_id_and_date", unique: true`
 
 
-
-Service Objects
-
-
-BalanceSnapshotService
-
-This class is responsible for taking a balance snapshot on a given date. This service could be run daily.
+## 1. Service Objects
 
 
-PaymentService
+### BalanceSnapshotTaker
+
+This class is responsible for taking a balance snapshot on a given date. To achive this, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day
+
+This service could be run daily .
+
+
+### PaymentSender
 
 This class is responsible for paying the user its available balance. Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
 

@@ -93,7 +93,9 @@ An unique index on date/account_id is required to guarantee uniqueness and to se
 
 This class is responsible for taking a balance snapshot on a given date. To achive this, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day
 
-This service could be run daily .
+This service could be run daily with a Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) to calculate the previous date ending balance.
+
+Given the number of sellers will be in the millions, to avoid this job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
 
 ### PaymentSender
 

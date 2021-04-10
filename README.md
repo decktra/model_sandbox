@@ -1,6 +1,6 @@
 # Data Model Design
 
-![Untitled](https://user-images.githubusercontent.com/53051293/114286292-b25ce300-9a5d-11eb-9cb0-5ce8feb1033c.jpg)
+![Data Model](https://user-images.githubusercontent.com/53051293/114286465-454a4d00-9a5f-11eb-950c-8987ce452440.jpg)
 
 
 ## 1. Active Record Models

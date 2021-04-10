@@ -124,7 +124,7 @@ At this point, a `PaymentPolicy` class might be needed to approve payments. An e
 
 Since we have an associaton Refund `belongs_to` Purchase (see Purchase above), we could easily create a Purchase `has_many` Refunds association and only pay part of the purchase that has not been refunded (if partials refunds exists) or not pay the purchase at all (if total refund took place). In any case, for the purpose of this exercise's limited time, I will not detail this important policy/validation consideration and I assume a negative `Account#balance` is technically possible. 
 
-## 3.Notes
+## 3. Notes
 
 - On a real will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language. 
 - I’ll probably also create a Billing namespace to modularize the app.

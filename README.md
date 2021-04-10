@@ -106,6 +106,8 @@ Also, those individual account/date Sidekiq jobs should be idempotent (i.e. if y
 
 This class is responsible for paying the user its payable balance. It has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed. The payable balance is then the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
 
+The latest baance that can be payed *******
+
 The `NON_PAYABLE_PERIOD` constant can be modified if the payout policy eventually changes.
 
 A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be set at the appropiate frecuency (biweekly, according to this exercise description )run daily with to loop through all accounts and calculate the previous date ending balance.

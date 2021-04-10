@@ -75,7 +75,7 @@ The migration for this model requires a purchase_id index and foreign key constr
 
 ### Payout
 
-This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It `has_one :entry, as: :entriable` and can contain other attributes that are exclusively related to the payout (destination, etc.). It delegates amount and date to Entry.
+This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It `has_one :entry, as: :entriable` and can contain other attributes that are exclusively related to the payout (destination, channel, etc.). It delegates amount and date to Entry.
 
 **Important:** Given that each "money movement" in our data model requires to create or update multiple records (for example, when a product is bought, both a Purchase and a Debit Entry record are created, and the account's balance is updated), a Commitment Control mechanism is required to guarantee data consistency. We should then wrap these operations in [Active Record Transaction's](https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html) protective blocks, where SQL statements are only permanent if they can all succeed as one atomic action.
 
@@ -98,41 +98,36 @@ In order to store a daily BalanceSnapshots for each account, a Period Job (such 
 1. Loop through all accounts to create indivual jobs with arguments `account_id` and yesterday's `date` to be process by Sidekiq.
 2. These individual jobs will then run the `BalanceSnapshotTaker` service and calculate each account's previous date ending balance, saving a `BalanceSnapshot` record in the DB.
 
-Given the number of sellers will be in the millions, to avoid this period job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
+Given that the number of sellers will be in the millions, to avoid this period job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
 
 Also, those individual account/date Sidekiq jobs should be idempotent (i.e. if you run the same account/date worker, you will create or update the same DB record).
 
 ### PaymentSender
 
-This class is responsible for paying the user its payable balance. It has a constant `NON_PAYABLE_PERIOD = 7.days` needed to calculate the date until which the user's balance can be payed. The payable balance is then the account's BalanceSnapshot for the date `NON_PAYABLE_PERIOD` days back.
-
-The latest baance that can be payed *******
+This service class is responsible for paying the user its payable balance. To achive this, it takes as argument `account_id`, it uses a constant `NON_PAYABLE_PERIOD = 7.days` to determine the payable date (7 days back from today), it find the account's BalanceSnaphot amount for that date, and finally it creates a Payout record and its respective Credit Entry with that amount.
 
 The `NON_PAYABLE_PERIOD` constant can be modified if the payout policy eventually changes.
 
-A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be set at the appropiate frecuency (biweekly, according to this exercise description )run daily with to loop through all accounts and calculate the previous date ending balance.
+A Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be set at the appropiate frecuency (biweekly, according to this exercise description ) to loop through all accounts and calculate the previous date ending balance.
 
-Given the number of sellers will be in the millions, to avoid this job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
+In order to pay all sellers, a Period Job (such as [SideKiq's cron jobs](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be configure to biweekly:
 
-Also, each account balance snapshot should be taken in a individual Sidekiq job (i.e. one Sidekiq job per account/date) and jobs should be idempotent (i.e. if you run the same account/date you will create or update the same DB record).
+1. Loop through all accounts to create indivual jobs with argument `account_id` to be process by Sidekiq.
+2. These individual jobs will then run the `PaymentSender` service for all account's that have a positive `BalanceSnapshot` amount for that payable date.
 
+The Period Job frecuency can be modified if the payout policy eventually changes.
+
+Again, given that the number of sellers will be in the millions, to avoid this job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.
 
 At this point, a `PaymentPolicy` class might be needed to approve payments. An example could be a case where total refunds amount after the `NON_PAYABLE_PERIOD` is higher than total purchases amounts after the `NON_PAYABLE_PERIOD`, therefore we will be paying the user/seller an amount he currently does not have. For instance, in an extreme case, we would pay the sellers on Friday the 10th for all their sales up to Friday the 3rd, but on the 7th most purchases were refunded.
 
 Since we have an associaton Refund `belongs_to` Purchase (see Purchase above), we could easily create a Purchase `has_many` Refunds association and only pay part of the purchase that has not been refunded (if partials refunds exists) or not pay the purchase at all (if total refund took place). In any case, for the purpose of this exercise's limited time, I will not detail this important policy/validation consideration and I assume a negative `Account#balance` is technically possible. 
 
-Determining the Available balance, as mentioned before, is Account’s responsibility and depends on:
+## 3.Notes
 
-The constant 
-
-
-Notes
-
-On a real will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language… Sorry, I’ve just re-read Eric Evans book :)
-I’ll probably create a Billing namespace
-Differentiate punctual payments vs recurring payments
-Taxes and currencies
-The term Purchase was proposed, but maybe the term Sale is better? Since a seller has many sales and the buyer has many purchases? Although Purchase is a more customer centric word
-
+- On a real will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language. 
+- I’ll probably also create a Billing namespace to modularize the app.
+- This model as it is, should be extensible to differentiate punctual payments vs recurring payments, and incorporate taxes and currencies.
+- The term Purchase was proposed, but maybe the term Sale is better? Since a seller has many sales and the buyer has many purchases?
 
 

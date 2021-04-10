@@ -65,19 +65,19 @@ add_foreign_key "entries", "accounts"
 
 ### Purchase
 
-This model `belongs_to` a Product and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the purchase (quantity, acquisition_channel, conversion_funnel, etc.). It delegates amount and date to Entry. Each new purchase creates a debit entry and thus increases the account's balance.
+This model `belongs_to` a Product and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the purchase (quantity, acquisition_channel, conversion_funnel, etc.). It delegates amount and date to its entry, since each new purchase creates a debit entry and thus increases the account's balance.
 
 The migration for this model requires a `product_id` index and foreign key constraint, similar to previous examples.
 
 ### Refund
 
-This model `belongs_to` a Purchase and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the refund (reason, partial/total, etc.). It delegates amount and date to Entry. Each new refund creates a credit entry and thus decreases the account's balance.
+This model `belongs_to` a Purchase and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the refund (reason, partial/total, etc.). It delegates amount and date to its entry, since each new refund creates a credit entry and thus decreases the account's balance.
 
 The migration for this model requires a `purchase_id` index and foreign key constraint, similar to previous examples.
 
 ### Payout
 
-This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It `has_one :entry, as: :entriable` and can contain other attributes that are exclusively related to the payout (destination, channel, etc.). It delegates amount and date to Entry. Each new payout creates a credit entry and thus decreases the account's balance.
+This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It `has_one :entry, as: :entriable` and can contain other attributes that are exclusively related to the payout (destination, channel, etc.). It delegates amount and date to its entry, since each new payout creates a credit entry and thus decreases the account's balance.
 
 **Important:** Given that each "money movement" in our data model requires to create or update multiple records (for example, when a product is bought, both a Purchase and a Debit Entry record are created, and the account's balance is updated), a Commitment Control mechanism is required to guarantee data consistency. We should then wrap these operations in [Active Record Transaction's](https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html) protective blocks, where SQL statements are only permanent if they can all succeed as one atomic action.
 

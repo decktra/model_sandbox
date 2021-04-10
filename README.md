@@ -77,6 +77,8 @@ The migration for this model requires a purchase_id index and foreign key constr
 
 This model represent a transfer of money from the user's Gumroad account to its bank, paypal, etc. It `has_one :entry, as: :entriable` and can contain other attributes that are exclusively related to the payout (destination, etc.). It delegates amount and date to Entry.
 
+**Important:** Given that each "money movement" in our data model requires to create or update multiple records (for example, when a product is bought, both a Purchase and a Debit Entry record are created, and the account's balance is updated), a Commitment Control mechanism is required to guarantee data consistency. We should then wrap these operations in [Active Record Transaction's](https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html) protective blocks, where SQL statements are only permanent if they can all succeed as one atomic action.
+
 ### BalanceSnapshot
 
 To avoid calculating a huge amount of historical entries when a balance in a given point of time is needed, a snapshot of a balance at the end of each date is recorded by this model. Therefore, if Account needs to calculate a balance for a specific time, it only has to get the previous date BalanceSnaphot and add/subsctract all debits/credits (entries) of that day.
@@ -89,11 +91,11 @@ An unique index on date/account_id is required to guarantee uniqueness and to se
 
 ### BalanceSnapshotTaker
 
-This service class is responsible for taking a balance snapshot on a given date. To achive this, it takes as arguments `account_id` and `date`, it gets the previous date BalanceSnaphot, and finally it adds/subsctracts all debits/credits (entries) of that specific account for that specific date.
+This service class is responsible for taking a snapshot of an account's ending balance on a given date. To achive this, it takes as arguments `account_id` and `date`, it gets the previous date BalanceSnaphot, and finally it adds/subsctracts all debits/credits (entries) of that specific account for that specific date.
 
-In order to daily BalanceSnapshots for each account, a Period Job (such as [SideKiq's](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be set to daily to:
+In order to store a daily BalanceSnapshots for each account, a Period Job (such as [SideKiq's cron jobs](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be configure to daily:
 
-1. loop through all accounts to create indivual jobs with arguments `account_id` and yesterday's `date` to be process by Sidekiq.
+1. Loop through all accounts to create indivual jobs with arguments `account_id` and yesterday's `date` to be process by Sidekiq.
 2. These individual jobs will then run the `BalanceSnapshotTaker` service and calculate each account's previous date ending balance, saving a `BalanceSnapshot` record in the DB.
 
 Given the number of sellers will be in the millions, to avoid this period job process to start crashing due to memory issues, we can use Active Records's `find_each` and specify a batch size to iterate over all users in a more memory efficient way.

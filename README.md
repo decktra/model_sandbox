@@ -18,7 +18,7 @@ The migration for this model requires:
 
 ### Account
 
-This model represents an user’s account. Its main attribute is `balance` (an integer representing USD cents) which represents the total amount of money in the user’s account. Its associations are:
+This model represents an user’s account. Its main attribute is `balance` (an integer for USD cents) which represents the total amount of money in the user’s account. Its associations are:
 
 1. A `belongs_to` association to User.
 2. A `has_many` association to Entries, which are the actual money transactions (see more below).
@@ -31,16 +31,16 @@ The migration for this model requires:
 
 ### Entry
 
-This models represents the actual money transactions. Its main attributes are `amount` (an integer representing USD cents) and `date`.
+This models represents the actual money transactions. Its main attributes are `amount` (an integer for USD cents) and `date`.
 
-On this model, I propose to implement a narrow and shallow Single Table Inheritance to distinguish to types of account entries: `Debit` and `Credit`. This would facilitate the calculation of account balance by simply adding debits and subsctracting credits to the current account's balance or a BalanceSnapshot, depending of what balance you need to calculate.
+On this model, I propose to implement a narrow and shallow Single Table Inheritance to distinguish to types of account entries: `Debit` and `Credit`. This would facilitate the calculation of a new account's balance by simply adding debits or subsctracting credits to the current account's balance.
 
 Its associations are:
 
 1. A `belongs_to` association to Account.
 2. A polymorphic associations to an entriable: `belongs_to :entriable, polymorphic: true`.
 
-I propose this polymorphism to easily expand the integration of other future models that represent money transactions on the user's account. Right now there is only Purchase, Refund and Payout (see definition below). But tomorrow there could be Bonus, Escrow, Gift, etc.
+I propose this polymorphism to easily expand the integration of other future models that represent money transactions on the user's account. Right now there is only Purchase, Refund and Payout (see definitions below). But in the future there could be Bonus, Escrow, Gift, etc.
 
 The Entry DB migration might look like this:
 

@@ -59,7 +59,7 @@ end
 add_foreign_key "entries", "accounts"
 ```
 
-**Important:** Being faithful to Event Sourcing, past entries CANNOT be modified. New ones are required to be introduced to amend old ones.
+**Important:** I propose to follow Event Sourcing principles, thus past entries CANNOT be modified. New ones are required to be introduced to amend old ones.
 
 ### Purchase
 

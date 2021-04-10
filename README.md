@@ -126,7 +126,7 @@ Since we have an associaton Refund `belongs_to` Purchase (see Purchase above), w
 
 ## 3. Notes
 
-- On a real will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language. 
+- On a real scenario, I will tackle this with Domain Driven Design, talking with domain experts to progressively distille a deep model with an ubiquitous language. 
 - I’ll probably also create a Billing namespace to modularize the app.
 - This model as it is, should be extensible to differentiate punctual payments vs recurring payments, and incorporate taxes and currencies.
 - The term Purchase was proposed, but maybe the term Sale is better? Since a seller has many sales and the buyer has many purchases?

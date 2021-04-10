@@ -67,13 +67,13 @@ add_foreign_key "entries", "accounts"
 
 This model `belongs_to` a Product and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the purchase (quantity, acquisition_channel, conversion_funnel, etc.). It delegates amount and date to Entry.
 
-The migration for this model requires a product_id index and foreign key constraint, similar to previous examples.
+The migration for this model requires a `product_id` index and foreign key constraint, similar to previous examples.
 
 ### Refund
 
 This model `belongs_to` a Purchase and `has_one :entry, as: :entriable`. It can contain other attributes that are exclusively related to the refund (reason, partial/total, etc.). It delegates amount and date to Entry.
 
-The migration for this model requires a purchase_id index and foreign key constraint, similar to previous examples.
+The migration for this model requires a `purchase_id` index and foreign key constraint, similar to previous examples.
 
 ### Payout
 

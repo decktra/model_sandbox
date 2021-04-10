@@ -113,7 +113,7 @@ The `NON_PAYABLE_PERIOD` constant can be modified if the payout policy eventuall
 In order to pay all sellers, a Period Job (such as [SideKiq's cron jobs](https://github.com/mperham/sidekiq/wiki/Ent-Periodic-Jobs)) could be configure to biweekly (according to this exercise description):
 
 1. Loop through all accounts to create indivual jobs with argument `account_id` to be process by Sidekiq.
-2. These individual jobs will then run the `PaymentSender` service for all account's that have a positive `BalanceSnapshot` amount for that payable date.
+2. These individual jobs will then run the `PaymentSender` service for each account that has a positive `BalanceSnapshot` amount for that payable date.
 
 The Period Job frecuency can be modified if the payout policy eventually changes.
 
